@@ -3,6 +3,7 @@ var http = require('http');
 
 var HTMLForcerChild = require('./HTMLForcerChild.js');
 HTMLForcerChild.setRoot('/home/img.mmmpa.net/public_html')
+HTMLForcerChild.setDefaultHTML('/home/img.mmmpa.net/public_html/default.html')
 
 var port_ = 80;
 var port_image_server_ = 8080;

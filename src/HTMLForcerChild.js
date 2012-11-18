@@ -4,6 +4,7 @@ var RandomID = require('./RandomID.js');
 
 var root_ = '/';
 var false_text = 'not found';
+var default_html_ = '';
 
 var HTMLForcerChild = function(request, response, path, callback){
 	this.response = response;
@@ -21,18 +22,23 @@ var HTMLForcerChild = function(request, response, path, callback){
 
 module.exports = HTMLForcerChild;
 module.exports.setRoot = setRoot;
+module.exports.setDefaultHTML = setDefaultHTML;
 
 HTMLForcerChild.prototype.responsePage = responsePage;
 HTMLForcerChild.prototype.responsePageFalse = responsePageFalse;
 HTMLForcerChild.prototype.getOneTimePath = getOneTimePath;
 HTMLForcerChild.prototype.getFuncOnRead = getFuncOnRead;
 
-function getFuncOnRead(){
+function getFuncOnRead(again){
 	var self = this;
 
 	return function(err, data){
 		if(err){
-			self.responsePageFalse();
+			if(!again){
+				fs.readFile(default_html_, self.getFuncOnRead(true));
+			}else{
+				self.responsePageFalse();				
+			}
 			return;
 		}
 		self.responsePage(data.toString());
@@ -40,7 +46,11 @@ function getFuncOnRead(){
 }
 
 function setRoot(root){
-	root_ = root;
+	root_ = root.replace(/\/$/,'');
+}
+
+function setDefaultHTML(html_path){
+	default_html_ = html_path;
 }
 
 function responsePage(html){
